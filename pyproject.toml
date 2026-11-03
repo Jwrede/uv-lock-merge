@@ -1,0 +1,27 @@
+[project]
+name = "uv-lock-merge"
+version = "0.1.0"
+description = "Three-way merge for uv.lock files: a git merge driver that keeps both branches' locked versions"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Jonathan Wrede" }]
+keywords = ["uv", "uv.lock", "git", "merge driver", "lockfile", "merge conflict"]
+classifiers = [
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Version Control :: Git",
+]
+
+[project.urls]
+Homepage = "https://github.com/Jwrede/uv-lock-merge"
+
+[project.scripts]
+uv-lock-merge = "uv_lock_merge.cli:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

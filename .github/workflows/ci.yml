@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest tests.test_unit -v
+      - name: Install and run the entry point
+        run: |
+          pip install .
+          uv-lock-merge --version
+
+  e2e:
+    # Real git merges of real uv.lock files, checked with `uv lock --locked`.
+    # Needs network access to PyPI.
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        uv: ["latest", "0.11.1", "0.8.0"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: ${{ matrix.uv }}
+      - run: uv --version
+      - run: python -m unittest tests.test_e2e -v
